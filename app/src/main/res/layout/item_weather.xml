@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="100dp">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvTitle"
+        style="@style/CtCenter"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textColor="@color/gray_txt_1"
+        android:textSize="11sp"
+        android:text="@{weather.title}"
+        android:gravity="center"
+        android:paddingHorizontal="5dp"
+        app:layout_constraintHorizontal_weight="0.12"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/vLine"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="Seoul" />
+
+    <include
+        layout="@layout/view_line_vertical"
+        android:id="@+id/vLine"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toEndOf="@+id/tvTitle"
+        app:layout_constraintEnd_toStartOf="@+id/weatherToday" />
+
+    <include
+        layout="@layout/item_weather_detail"
+        android:id="@+id/weatherToday"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHorizontal_weight="0.4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/vLine"
+        app:layout_constraintEnd_toStartOf="@+id/vLine2"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <include
+        layout="@layout/view_line_vertical"
+        android:id="@+id/vLine2"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toEndOf="@+id/weatherToday"
+        app:layout_constraintEnd_toStartOf="@+id/weatherTomorrow" />
+
+    <include
+        layout="@layout/item_weather_detail"
+        android:id="@+id/weatherTomorrow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHorizontal_weight="0.4"
+        app:layout_constraintTop_toTopOf="@+id/weatherToday"
+        app:layout_constraintStart_toEndOf="@+id/vLine2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/weatherToday" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

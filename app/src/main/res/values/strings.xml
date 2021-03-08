@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">weather_assignment</string>
+    <string name="format_temp">%.0f℃</string>
+    <string name="format_humidity">%d%%</string>
+    <string name="local">Local</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+</resources>

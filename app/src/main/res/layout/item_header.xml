@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clHeader"
+    android:background="@drawable/border"
+    android:layout_width="match_parent"
+    android:layout_height="40dp">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvLocal"
+        style="@style/CtLeft.Middle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@{header.titleLocal}"
+        android:textColor="@color/gray_txt_1"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@id/vLine"
+        app:layout_constraintHorizontal_weight="0.12"
+        tools:ignore="MissingConstraints"
+        tools:text="Local" />
+
+    <include
+        android:id="@+id/vLine"
+        layout="@layout/view_line_vertical"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toStartOf="@id/tvToday"
+        app:layout_constraintStart_toEndOf="@id/tvLocal" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvToday"
+        style="@style/CtVerticalCenter"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@{header.titleToday}"
+        android:textColor="@color/gray_txt_1"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/vLine2"
+        app:layout_constraintHorizontal_weight="0.4"
+        app:layout_constraintStart_toEndOf="@id/vLine"
+        tools:ignore="MissingConstraints"
+        tools:text="Today" />
+
+    <include
+        android:id="@+id/vLine2"
+        layout="@layout/view_line_vertical"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toStartOf="@id/tvTomorrow"
+        app:layout_constraintStart_toEndOf="@id/tvToday" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvTomorrow"
+        style="@style/CtRight.Middle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@{header.titleTomorrow}"
+        android:textColor="@color/gray_txt_1"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        app:layout_constraintHorizontal_weight="0.4"
+        app:layout_constraintStart_toEndOf="@id/vLine2"
+        tools:ignore="MissingConstraints"
+        tools:text="Tomorrow" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
