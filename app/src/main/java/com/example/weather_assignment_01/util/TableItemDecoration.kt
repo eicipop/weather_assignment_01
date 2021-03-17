@@ -1,4 +1,4 @@
-package com.example.weather_assignment.util
+package com.example.weather_assignment_01.util
 
 import android.content.Context
 import android.graphics.Canvas

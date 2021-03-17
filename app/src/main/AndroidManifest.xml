@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.weather_assignment">
+    package="com.example.weather_assignment_01">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,8 +10,9 @@
         android:label="Weather_api"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Weather_assignment">
-        <activity android:name=".MainActivity">
+        android:theme="@style/Theme.Weather_assignment"
+        android:name=".util.WeatherApplication">
+        <activity android:name="com.example.weather_assignment_01.ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

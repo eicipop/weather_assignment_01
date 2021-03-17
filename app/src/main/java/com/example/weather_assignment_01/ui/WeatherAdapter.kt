@@ -1,4 +1,4 @@
-package com.example.weather_assignment.ui
+package com.example.weather_assignment_01.ui
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -11,21 +11,42 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.weather_assignment.R
-import com.example.weather_assignment.data.Weather
-import com.example.weather_assignment.data.WeatherHeader
+import com.example.weather_assignment_01.R
+import com.example.weather_assignment_01.data.Weather
+import com.example.weather_assignment_01.data.Weather.WeatherHeader
+import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
-class WeatherAdapter : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() {
+
+open class WeatherAdapter : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() {
+
     private val VIEW_TYPE_WEATHER: Int = R.layout.item_weather
     private val VIEW_TYPE_HEADING: Int = R.layout.item_header
 
-    private val differ = AsyncListDiffer(this, DiffCallback)
+    private val differ = AsyncListDiffer<Any>(this, DiffCallback)
 
-    var weathers: List<Weather> = Collections.emptyList()
+    fun submitList(list: Call<List<Weather.Response>>) {
+        differ.submitList(buildMergedList())
+    }
+
+    var retrofit: Retrofit = Retrofit.Builder()
+        .baseUrl("https://www.metaweather.com")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    /* // Create an instance of our GitHub API interface.
+     var service: WeatherService = retrofit.create(WeatherService::class.java)
+
+     // Create a call instance for looking up Retrofit contributors.
+     var call: Single<List<Weather>> = service.getWeather("123234") as List<Weather>
+ */
+
+    var weathers: List<Weather.WeatherModel> = Collections.emptyList()
         set(value) {
             field = value
-            differ.submitList(buildMergedList(weatherList = value))
+            differ.submitList(buildMergedList(weatherList = value ))
         }
 
     init {
@@ -34,12 +55,12 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() 
 
     private fun buildMergedList(
         // 날씨에 대한 리스트
-        weatherList: List<Weather> = weathers
+        weatherList: List<Weather.WeatherModel> = weathers
     ): MutableList<Any> {
         val merged = mutableListOf<Any>()
         // 날씨 리스트가 있으면 다른 종류의 data 인 WeatherHeader 를 같이 합쳐서 리스트로 사용
-        if (weatherList.isNotEmpty()) {
-            merged += WeatherHeader(
+        if (weatherList.isEmpty()) {
+            merged += Weather.WeatherHeader(
                 R.string.local,
                 R.string.today,
                 R.string.tomorrow
@@ -51,11 +72,11 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return when(viewType) {
+        return when (viewType) {
             VIEW_TYPE_WEATHER -> WeatherViewHolder.WeatherInfoViewHolder(
                 inflater.inflate(VIEW_TYPE_WEATHER, parent, false)
             )
-            VIEW_TYPE_HEADING ->WeatherViewHolder.WeatherHeaderViewHolder(
+            VIEW_TYPE_HEADING -> WeatherViewHolder.WeatherHeaderViewHolder(
                 inflater.inflate(VIEW_TYPE_HEADING, parent, false)
             )
             else -> throw IllegalStateException("Unknown viewType $viewType")
@@ -63,14 +84,14 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() 
     }
 
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
-        when(holder){
-            is WeatherViewHolder.WeatherInfoViewHolder -> holder.bind(differ.currentList[position] as Weather)
+        when (holder) {
+            is WeatherViewHolder.WeatherInfoViewHolder -> holder.bind(differ.currentList[position] as Weather.Response)
             is WeatherViewHolder.WeatherHeaderViewHolder -> holder.bind(differ.currentList[position] as WeatherHeader)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when(differ.currentList[position]){
+        return when (differ.currentList[position]) {
             is Weather -> VIEW_TYPE_WEATHER
             is WeatherHeader -> VIEW_TYPE_HEADING
             else -> throw  IllegalStateException("Unknown view type at position $position")
@@ -122,7 +143,7 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() 
                     .findViewById<ImageView>(R.id.ivWeatherIcon)
             }
 
-            fun bind(item: Weather) {
+            fun bind(item: Weather.Response) {
                 tvTitle.text = item.title
 
                 item.consolidatedWeather[0].apply {
@@ -130,7 +151,10 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() 
                     tvWeatherTempToday.text =
                         String.format(itemView.context.getString(R.string.format_temp), theTemp)
                     tvWeatherHumidityToday.text =
-                        String.format(itemView.context.getString(R.string.format_humidity), humidity)
+                        String.format(
+                            itemView.context.getString(R.string.format_humidity),
+                            humidity
+                        )
                     weatherIcon(ivWeatherIconToday, iconUrl)
                 }
 
@@ -139,7 +163,10 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() 
                     tvWeatherTempTomorrow.text =
                         String.format(itemView.context.getString(R.string.format_temp), theTemp)
                     tvWeatherHumidityTomorrow.text =
-                        String.format(itemView.context.getString(R.string.format_humidity), humidity)
+                        String.format(
+                            itemView.context.getString(R.string.format_humidity),
+                            humidity
+                        )
                     weatherIcon(ivWeatherIconTomorrow, iconUrl)
                 }
             }
@@ -154,18 +181,19 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() 
 
         }
 
-        class WeatherHeaderViewHolder(itemView: View):WeatherViewHolder(itemView){
-            private val tvLocal:TextView by lazy { itemView.findViewById<TextView>(R.id.tvLocal) }
-            private val tvToday:TextView by lazy { itemView.findViewById<TextView>(R.id.tvToday) }
-            private val tvTomorrow:TextView by lazy { itemView.findViewById<TextView>(R.id.tvTomorrow) }
+        class WeatherHeaderViewHolder(itemView: View) : WeatherViewHolder(itemView) {
+            private val tvLocal: TextView by lazy { itemView.findViewById<TextView>(R.id.tvLocal) }
+            private val tvToday: TextView by lazy { itemView.findViewById<TextView>(R.id.tvToday) }
+            private val tvTomorrow: TextView by lazy { itemView.findViewById<TextView>(R.id.tvTomorrow) }
 
-            fun bind(weatherHeader: WeatherHeader){
+            fun bind(weatherHeader: WeatherHeader) {
                 tvLocal.text = itemView.resources.getString(weatherHeader.titleLocal)
                 tvToday.text = itemView.resources.getString(weatherHeader.titleToday)
                 tvTomorrow.text = itemView.resources.getString(weatherHeader.titleTomorrow)
             }
         }
     }
+
     /**
      * Diff items presented by this adapter.
      */
@@ -186,4 +214,6 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() 
             }
         }
     }
+
+
 }
